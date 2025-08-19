@@ -272,10 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
   wrapper.classList.add('trending-wrapper');
   const leftBtn = document.createElement('button');
   leftBtn.classList.add('trending-arrow', 'left');
-  leftBtn.innerHTML = '&#8249;'; // left chevron
+  leftBtn.innerHTML = '&#8249;';
   const rightBtn = document.createElement('button');
   rightBtn.classList.add('trending-arrow', 'right');
-  rightBtn.innerHTML = '&#8250;'; // right chevron
+  rightBtn.innerHTML = '&#8250;';
 
   originalContainer.parentNode.insertBefore(wrapper, originalContainer);
   wrapper.appendChild(leftBtn);
@@ -284,42 +284,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchTrendingMovies() {
     originalContainer.innerHTML = 'Loading...';
-
     try {
-      const traktResponse = await fetch('https://api.trakt.tv/movies/trending', {
+      const traktRes = await fetch('https://api.trakt.tv/movies/trending', {
         headers: {
           'Content-Type': 'application/json',
           'trakt-api-version': '2',
           'trakt-api-key': traktApiKey
         }
       });
-      const traktData = await traktResponse.json();
+      const traktData = await traktRes.json();
       originalContainer.innerHTML = '';
 
       for (let i = 0; i < Math.min(traktData.length, 10); i++) {
         const movie = traktData[i].movie;
         let posterUrl = '';
 
-        // Fanart.tv
         try {
-          const fanartResponse = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
-          const fanartData = await fanartResponse.json();
+          const fanartRes = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
+          const fanartData = await fanartRes.json();
           posterUrl = fanartData.movieposter ? fanartData.movieposter[0].url : '';
-        } catch(e) { posterUrl = ''; }
+        } catch(e){ posterUrl = ''; }
 
-        // OMDb fallback
         if(!posterUrl) {
           try {
-            const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
-            const omdbData = await omdbResponse.json();
+            const omdbRes = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
+            const omdbData = await omdbRes.json();
             posterUrl = omdbData.Poster !== 'N/A' ? omdbData.Poster : '';
-          } catch(e) { posterUrl = ''; }
+          } catch(e){ posterUrl = ''; }
         }
+
+        // Fallback placeholder if still empty
+        if(!posterUrl) posterUrl = 'https://via.placeholder.com/300x450?text=No+Image';
 
         const card = document.createElement('div');
         card.classList.add('trending-card');
         card.innerHTML = `
-          <img src='${posterUrl}' alt='${movie.title}'>
+          <img src="${posterUrl}" alt="${movie.title}">
           <div class="trending-card-title">${movie.title}</div>
         `;
 
@@ -330,6 +330,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         originalContainer.appendChild(card);
       }
+
+      // Arrow scrolling after movies loaded
+      const container = originalContainer;
+
+      function updateArrows() {
+        leftBtn.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
+        rightBtn.style.display = container.scrollLeft + container.clientWidth < container.scrollWidth ? 'flex' : 'none';
+      }
+
+      updateArrows();
+
+      leftBtn.addEventListener('click', () => {
+        container.scrollBy({ left: -container.querySelector('.trending-card').offsetWidth - 20, behavior: 'smooth' });
+        setTimeout(updateArrows, 300);
+      });
+      rightBtn.addEventListener('click', () => {
+        container.scrollBy({ left: container.querySelector('.trending-card').offsetWidth + 20, behavior: 'smooth' });
+        setTimeout(updateArrows, 300);
+      });
+
+      container.addEventListener('scroll', updateArrows);
+
     } catch(err) {
       originalContainer.innerHTML = 'Failed to load trending movies.';
       console.error(err);
@@ -337,31 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   fetchTrendingMovies();
-
-const container = document.querySelector('.trending-container');
-const leftBtn = document.querySelector('.trending-arrow.left');
-const rightBtn = document.querySelector('.trending-arrow.right');
-
-function updateArrows() {
-  leftBtn.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
-  rightBtn.style.display = container.scrollLeft + container.clientWidth < container.scrollWidth ? 'flex' : 'none';
-}
-
-// Initial arrow visibility
-updateArrows();
-
-leftBtn.addEventListener('click', () => {
-  container.scrollBy({ left: -container.querySelector('.trending-card').offsetWidth - 20, behavior: 'smooth' });
-  setTimeout(updateArrows, 300);
 });
-
-rightBtn.addEventListener('click', () => {
-  container.scrollBy({ left: container.querySelector('.trending-card').offsetWidth + 20, behavior: 'smooth' });
-  setTimeout(updateArrows, 300);
-});
-
-// Update arrows on manual scroll
-container.addEventListener('scroll', updateArrows);
 
 </script>
 
