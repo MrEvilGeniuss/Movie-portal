@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DefinitelyNetflix - Watch popular TV shows and movies online. Join today!">
+  <meta name="keywords" content="DefinitelyNetflix, movies, TV shows, Pirate">
+  <meta name="author" content="MrEvilGeniuss">
+  <title>Netflix - Watch TV Shows Online, Watch Movies Online</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: black; color: white; font-family: 'Poppins', sans-serif; }
+
+    /* Navbar */
+    .navbar { position: absolute; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 1.5% 10%; z-index: 10; align-items: center; }
+    .navbar_netflix { height: 100%; width: 220px; }
+    .netflix_logo { width: 100%; height: auto; }
+    .sign_in_button { border: none; background: rgba(229,9,20,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: transform 0.3s ease, background-color 0.3s ease; }
+    .sign_in_button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
+
+    /* Hero */
+    .hero { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+    .hero_bg_img_cont img { width: 100%; height: 100%; object-fit: cover; }
+    .hero_bg_overlay { position: absolute; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
+    .hero_card { position: absolute; top: 30%; left: 10%; display: flex; flex-direction: column; gap: 20px; max-width: 600px; text-align: left; }
+    .hero_title { font-weight: 800; font-size: 3rem; line-height: 1.2; }
+    .hero_subtitle { font-weight: 400; font-size: 1.5rem; }
+    .hero_desc { display: flex; gap: 15px; }
+    .hero_desc input { flex: 1; padding: 20px; font-size: 1.2rem; border-radius: 12px; border: none; background: rgba(229,9,20,0.2); backdrop-filter: blur(10px); color: white; transition: transform 0.3s ease, background 0.3s ease; }
+    .hero_desc input:focus { outline: none; transform: scale(1.02); background: rgba(229,9,20,0.4); }
+    .hero_desc button { padding: 20px 40px; font-size: 1.2rem; background: rgba(229,9,20,0.2); backdrop-filter: blur(10px); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: transform 0.3s ease, background 0.3s ease; }
+    .hero_desc button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
+
+    /* Trending Carousel */
+    .trending-section { padding: 50px 10%; }
+    .trending-title { font-size: 1.8rem; margin-bottom: 20px; }
+    .trending-container { display: flex; overflow-x: auto; gap: 25px; padding-bottom: 10px; scroll-behavior: smooth; }
+    .trending-container::-webkit-scrollbar { display: none; }
+    .trending-card { min-width: 250px; height: 350px; border-radius: 15px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; flex-shrink: 0; }
+    .trending-card img { width: 100%; height: 100%; object-fit: cover; }
+    .trending-card:hover { transform: scale(1.05); }
+
+    /* More Reasons Section */
+    .reasons-section { padding: 50px 10%; }
+    .reasons-section h2 { font-size: 1.8rem; margin-bottom: 20px; }
+    .reasons-container { display: flex; gap: 25px; }
+    .reason-card { flex: 1; min-width: 0; height: 350px; border-radius: 15px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #ff6a00, #ee0979); color: white; padding: 20px; }
+    .reason-card h3 { margin-bottom: 10px; font-size: 1.2rem; font-weight: 700; }
+    .reason-card p { font-size: 0.95rem; line-height: 1.4; }
+
+    /* FAQ Section */
+    .faq-section { padding: 50px 10%; }
+    .faq-section h2 { font-size: 1.8rem; margin-bottom: 20px; }
+    .faq-item { background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 10px; padding: 15px 20px; cursor: pointer; transition: background 0.3s ease; }
+    .faq-item:hover { background: rgba(255,255,255,0.1); }
+    .faq-question { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+    .faq-answer { display: none; margin-top: 10px; font-weight: 400; font-size: 0.95rem; }
+
+    /* Footer */
+    .footer { background-color: #111; padding: 50px 10%; }
+    .footer p { margin-bottom: 1.5rem; }
+    .footer .footer-cols { display: grid; grid-template-columns: repeat(4,1fr); grid-gap: 2rem; margin-bottom: 30px; }
+    .footer li { list-style: none; line-height: 1.8; cursor: pointer; transition: all 0.3s ease; }
+    .footer li:hover { text-decoration: underline; }
+
+    body::after { content: ''; display: block; height: 100px; }
+    a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="navbar_netflix">
+        <img src="images/logo.png" alt="Netflix Logo" class="netflix_logo" />
+      </div>
+      <div class="navbar_nav_items">
+        <button class="sign_in_button">Sign In</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero_bg_img_cont">
+        <img src="images/netflix_bg.jpg" alt="Netflix Banner Image" class="hero_bg_img" />
+      </div>
+      <div class="hero_bg_overlay"></div>
+      <div class="hero_card">
+        <h1 class="hero_title">The biggest cinema hits.<br>Ready to watch here from ₹0.</h1>
+        <h2 class="hero_subtitle">Join today. Cancel never.</h2>
+        <p class="hero_desc">
+          <input type="text" placeholder="Username">
+          <button class="get_started">Get Started ></button>
+        </p>
+      </div>
+    </section>
+
+    <section class="trending-section">
+      <h2 class="trending-title">Trending Now</h2>
+      <div class="trending-container" id="trending-container">
+        <div class="trending-card"><img src="images/trending1.jpg" alt="Trending 1"></div>
+        <div class="trending-card"><img src="images/trending2.jpg" alt="Trending 2"></div>
+        <div class="trending-card"><img src="images/trending3.jpg" alt="Trending 3"></div>
+        <div class="trending-card"><img src="images/trending4.jpg" alt="Trending 4"></div>
+        <div class="trending-card"><img src="images/trending5.jpg" alt="Trending 5"></div>
+      </div>
+    </section>
+
+    <section class="reasons-section">
+      <h2>More Reasons to Join</h2>
+      <div class="reasons-container">
+        <div class="reason-card">
+          <h3>Enjoy on your TV</h3>
+          <p>Watch on smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players and more.</p>
+        </div>
+        <div class="reason-card">
+          <h3>Download your shows to watch offline</h3>
+          <p>Save your favourites easily and always have something to watch.</p>
+        </div>
+        <div class="reason-card">
+          <h3>Watch everywhere</h3>
+          <p>Stream unlimited movies and TV shows on your phone, tablet, laptop and TV.</p>
+        </div>
+        <div class="reason-card">
+          <h3>Create profiles for kids</h3>
+          <p>Send kids on adventures with their favourite characters in a space made just for them — free with your membership.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <div class="faq-question">What is Netflix? <span>+</span></div>
+        <div class="faq-answer">Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">How much does Netflix cost? <span>+</span></div>
+        <div class="faq-answer">Netflix subscription plans vary based on features and region. Check your country for details.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Where can I watch? <span>+</span></div>
+        <div class="faq-answer">Watch Netflix on your smartphone, tablet, smart TV, laptop, or streaming devices wherever you go.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">How do I cancel? <span>+</span></div>
+        <div class="faq-answer">You can cancel your Netflix subscription anytime through your account settings without any additional fees.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">What can I watch on Netflix? <span>+</span></div>
+        <div class="faq-answer">Netflix has a wide selection of movies, TV shows, documentaries, and original productions available for streaming.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Is Netflix good for kids? <span>+</span></div>
+        <div class="faq-answer">Yes, Netflix offers a dedicated Kids section with content suitable for children and parental control options.</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Any issue? Call IDON-TGI-VEA-FUCK</p>
+      <div class="footer-cols">
+        <ul>
+          <li>FAQ</li>
+          <li>Privacy</li>
+          <li>Speed Test</li>
+        </ul>
+        <ul>
+          <li>Jobs</li>
+          <li>Cookie Preferences</li>
+          <li>Legal Notices</li>
+        </ul>
+        <ul>
+          <li>Account</li>
+          <li>Ways to Watch</li>
+          <li>Only on Netflix</li>
+        </ul>
+        <ul>
+          <li>Media Centre</li>
+          <li>Terms of Use</li>
+          <li>Contact Use</li>
+        </ul>
+      </div>
+    </footer>
+
+    <script>
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+          const answer = item.querySelector('.faq-answer');
+          answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+          question.querySelector('span').textContent = answer.style.display === 'block' ? '-' : '+';
+        });
+      });
+    </script>
+  </main>
+</body>
+
+</html>
