@@ -98,15 +98,9 @@
     </section>
 
     <section class="trending-section">
-      <h2 class="trending-title">Trending Now</h2>
-      <div class="trending-container" id="trending-container">
-        <div class="trending-card"><img src="images/trending1.jpg" alt="Trending 1"></div>
-        <div class="trending-card"><img src="images/trending2.jpg" alt="Trending 2"></div>
-        <div class="trending-card"><img src="images/trending3.jpg" alt="Trending 3"></div>
-        <div class="trending-card"><img src="images/trending4.jpg" alt="Trending 4"></div>
-        <div class="trending-card"><img src="images/trending5.jpg" alt="Trending 5"></div>
-      </div>
-    </section>
+  <h2 class="trending-title">Trending Now</h2>
+  <div class="trending-container" id="trending-container"></div>
+</section>
 
     <section class="reasons-section">
       <h2>More Reasons to Join</h2>
@@ -196,6 +190,60 @@
       });
     </script>
   </main>
+  <script>
+  const traktApiKey = '70639e492be07913ad0f3b1108a129ff6b86a5ae733246f40886c8f98c41889f';
+  const fanartApiKey = 'c5e2d487b405bf6082706ba17b5c8f38';
+  const omdbApiKey = 'ffa1ef04';
+
+  async function fetchTrendingMovies() {
+    const container = document.getElementById('trending-container');
+    container.innerHTML = 'Loading...';
+
+    try {
+      // Fetch trending movies from Trakt
+      const traktResponse = await fetch('https://api.trakt.tv/movies/trending', {
+        headers: {
+          'Content-Type': 'application/json',
+          'trakt-api-version': '2',
+          'trakt-api-key': traktApiKey
+        }
+      });
+      const traktData = await traktResponse.json();
+      container.innerHTML = '';
+
+      for (let i = 0; i < Math.min(traktData.length, 10); i++) {
+        const movie = traktData[i].movie;
+        let posterUrl = '';
+
+        // Try Fanart.tv for poster
+        try {
+          const fanartResponse = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
+          const fanartData = await fanartResponse.json();
+          posterUrl = fanartData.movieposter ? fanartData.movieposter[0].url : '';
+        } catch(e) { posterUrl = ''; }
+
+        // Fallback to OMDb if needed
+        if(!posterUrl) {
+          try {
+            const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
+            const omdbData = await omdbResponse.json();
+            posterUrl = omdbData.Poster !== 'N/A' ? omdbData.Poster : '';
+          } catch(e) { posterUrl = '' }
+        }
+
+        const card = document.createElement('div');
+        card.classList.add('trending-card');
+        card.innerHTML = `<img src='${posterUrl}' alt='${movie.title}'>`;
+        container.appendChild(card);
+      }
+    } catch (err) {
+      container.innerHTML = 'Failed to load trending movies.';
+      console.error(err);
+    }
+  }
+
+  fetchTrendingMovies();
+</script>
 </body>
 
 </html>
