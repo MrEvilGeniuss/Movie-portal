@@ -37,20 +37,18 @@
     .trending-title { font-size: 1.8rem; margin-bottom: 20px; }
     .trending-container { display: flex; overflow-x: auto; gap: 25px; padding-bottom: 10px; scroll-behavior: smooth; }
     .trending-container::-webkit-scrollbar { display: none; }
-    .trending-card {
-  width: 220px;        /* fixed width for all cards */
-  flex-shrink: 0;
+ .trending-card {
+  flex: 0 0 calc((100% - 4 * 15px) / 4.5);
   cursor: pointer;
-  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .trending-card img {
   width: 100%;
-  height: 300px;
-  object-fit: cover;
+  height: auto; /* keep full aspect ratio */
   border-radius: 12px;
 }
 
@@ -59,12 +57,26 @@
   text-align: center;
   font-size: 0.9rem;
   font-weight: 500;
-  color: white;
-  word-wrap: break-word; /* wrap long titles */
   line-height: 1.2rem;
-  max-height: 2.4rem;    /* max 2 lines */
-  overflow: hidden;
+  word-wrap: break-word;
+  color: white;
 }
+
+/* Glassmorphic number at bottom-left */
+.trending-number {
+  position: absolute;
+  bottom: -10px; /* protruding outside */
+  left: 10px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(5px);
+  padding: 5px 12px;
+  border-radius: 12px;
+  z-index: 2;
+}
+
 
 
     .trending-card:hover { transform: scale(1.05); }
@@ -286,6 +298,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchTrendingMovies();
 });
+   // After populating the cards
+container.querySelectorAll('.trending-card').forEach((card, index) => {
+  const number = document.createElement('div');
+  number.classList.add('trending-number');
+  number.textContent = index + 1;
+  card.appendChild(number);
+});
+
 </script>
 
 </body>
