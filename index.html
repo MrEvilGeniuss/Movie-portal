@@ -287,6 +287,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src='${posterUrl}' alt='${movie.title}'>
           <div class="trending-card-title">${movie.title}</div>
         `;
+         // After populating the cards
+container.querySelectorAll('.trending-card').forEach((card, index) => {
+  const number = document.createElement('div');
+  number.classList.add('trending-number');
+  number.textContent = index + 1;
+  card.appendChild(number);
+});
         container.appendChild(card);
       }
 
@@ -298,13 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchTrendingMovies();
 });
-   // After populating the cards
-container.querySelectorAll('.trending-card').forEach((card, index) => {
-  const number = document.createElement('div');
-  number.classList.add('trending-number');
-  number.textContent = index + 1;
-  card.appendChild(number);
-});
+  
 
 </script>
 
