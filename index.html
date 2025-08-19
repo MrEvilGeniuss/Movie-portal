@@ -33,16 +33,27 @@
     .hero_desc button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
     /* Add spacing between sections */
 .hero { margin-bottom: 50px; }
-.trending-section { margin-top: 50px; margin-bottom: 50px; }
+.trending-section {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 0 10%; /* same padding as other sections */
+}
+
+.trending-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px; /* adds gap between heading and posters */
+  margin-left: calc(0%); /* heading aligns with first poster */
+}
 
 /* Trending Carousel wrapper to allow arrows */
 /* Trending wrapper and arrows */
 .trending-wrapper {
-  position: relative;
-  padding: 0 10%; /* same as other sections */
+  position: relative; /* so arrows are inside this wrapper */
   display: flex;
   align-items: center;
+  padding: 0 10%; /* same as other sections */
 }
+
 
 .trending-container {
   display: flex;
@@ -80,18 +91,39 @@
   color: white;
 }
 
-/* Arrow buttons */
-/* Arrow buttons beside posters */
 .trending-arrow {
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
-.trending-arrow.left { left: 0; }
-.trending-arrow.right { right: 0; }
+
 .trending-arrow:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-50%) scale(1.05);
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.1);
 }
+
+.trending-arrow.left {
+  left: -30px; /* slightly away from posters */
+}
+
+.trending-arrow.right {
+  right: -30px; /* slightly away from posters */
+}
+
 
 
 /* Number on poster */
