@@ -31,6 +31,9 @@
     .hero_desc input:focus { outline: none; transform: scale(1.02); background: rgba(229,9,20,0.4); }
     .hero_desc button { padding: 20px 40px; font-size: 1.2rem; background: rgba(229,9,20,0.2); backdrop-filter: blur(10px); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: transform 0.3s ease, background 0.3s ease; }
     .hero_desc button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
+    /* Add spacing between sections */
+.hero { margin-bottom: 50px; }
+.trending-section { margin-top: 50px; margin-bottom: 50px; }
 
 /* Trending Carousel wrapper to allow arrows */
 /* Trending wrapper and arrows */
@@ -66,31 +69,29 @@
   height: auto; /* keep full ratio */
   border-radius: 12px;
 }
+    /* Movie title centered */
+.trending-card-title {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.2rem;
+  word-wrap: break-word;
+  color: white;
+}
 
 /* Arrow buttons */
+/* Arrow buttons beside posters */
 .trending-arrow {
-  position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border: none;
-  width: 50px;
-  height: 80px;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  border-radius: 12px;
-  transition: all 0.3s ease;
 }
+.trending-arrow.left { left: 0; }
+.trending-arrow.right { right: 0; }
 .trending-arrow:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-50%) scale(1.05);
 }
-.trending-arrow.left { left: -25px; }
-.trending-arrow.right { right: -25px; }
 
 
 /* Number on poster */
@@ -337,14 +338,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchTrendingMovies();
 
-  // Arrow scrolling
-  leftBtn.addEventListener('click', () => {
-    originalContainer.scrollBy({ left: -originalContainer.clientWidth / 2, behavior: 'smooth' });
-  });
-  rightBtn.addEventListener('click', () => {
-    originalContainer.scrollBy({ left: originalContainer.clientWidth / 2, behavior: 'smooth' });
-  });
+const container = document.querySelector('.trending-container');
+const leftBtn = document.querySelector('.trending-arrow.left');
+const rightBtn = document.querySelector('.trending-arrow.right');
+
+function updateArrows() {
+  leftBtn.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
+  rightBtn.style.display = container.scrollLeft + container.clientWidth < container.scrollWidth ? 'flex' : 'none';
+}
+
+// Initial arrow visibility
+updateArrows();
+
+leftBtn.addEventListener('click', () => {
+  container.scrollBy({ left: -container.querySelector('.trending-card').offsetWidth - 20, behavior: 'smooth' });
+  setTimeout(updateArrows, 300);
 });
+
+rightBtn.addEventListener('click', () => {
+  container.scrollBy({ left: container.querySelector('.trending-card').offsetWidth + 20, behavior: 'smooth' });
+  setTimeout(updateArrows, 300);
+});
+
+// Update arrows on manual scroll
+container.addEventListener('scroll', updateArrows);
+
 </script>
 
 
