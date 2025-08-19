@@ -33,10 +33,38 @@
     .hero_desc button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
 
 /* Trending Carousel wrapper to allow arrows */
+/* Trending wrapper and arrows */
 .trending-wrapper {
   position: relative;
+  padding: 0 10%; /* same as other sections */
   display: flex;
   align-items: center;
+}
+
+.trending-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+  /* hide scroll bar */
+  scrollbar-width: none; /* Firefox */
+}
+.trending-container::-webkit-scrollbar { display: none; }
+
+/* Each card width: 4.5 cards visible */
+.trending-card {
+  flex: 0 0 calc((100% - 3 * 20px) / 4.5); /* 4.5 posters + gaps */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.trending-card img {
+  width: 100%;
+  height: auto; /* keep full ratio */
+  border-radius: 12px;
 }
 
 /* Arrow buttons */
@@ -45,58 +73,25 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   border: none;
+  width: 50px;
+  height: 80px;
+  font-size: 2rem;
+  font-weight: bold;
   color: white;
-  font-size: 2.5rem;
-  padding: 0 15px;
   cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  opacity: 1; /* always visible for now */
-}
-.trending-arrow:hover { background: rgba(255,255,255,0.3); color: #e50914; transform: scale(1.1); }
-.trending-arrow.left { left: 0; }
-.trending-arrow.right { right: 0; }
-
-/* Container */
-.trending-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 15px;
-  scroll-behavior: smooth;
-  padding: 10px 0;
-  margin: 0 50px; /* space for arrows */
-}
-.trending-container::-webkit-scrollbar { display: none; }
-
-/* Poster card */
-.trending-card {
-  flex: 0 0 calc((100% - 3*15px)/4); /* width for 4 posters */
-  max-width: 200px; /* control size */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.trending-card img {
-  width: 100%;
-  height: auto;
   border-radius: 12px;
-  object-fit: cover;
+  transition: all 0.3s ease;
 }
+.trending-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.05);
+}
+.trending-arrow.left { left: -25px; }
+.trending-arrow.right { right: -25px; }
 
-/* Poster title below poster */
-.trending-card-title {
-  margin-top: 5px;
-  text-align: center;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: white;
-}
 
 /* Number on poster */
 .trending-number {
