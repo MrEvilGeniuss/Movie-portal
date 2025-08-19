@@ -57,14 +57,23 @@
 
 .trending-container {
   display: flex;
-  overflow-x: auto;
   gap: 20px;
+  overflow-x: auto;
   scroll-behavior: smooth;
-  padding-bottom: 10px;
-  /* hide scroll bar */
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; /* hide scrollbar for Firefox */
 }
-.trending-container::-webkit-scrollbar { display: none; }
+
+.trending-container::-webkit-scrollbar {
+  display: none; /* hide scrollbar for Chrome/Safari */
+}
+
+.trending-item {
+  flex: 0 0 calc(20% - 16px); /* 100% / 5 = 20% */
+  max-width: calc(20% - 16px);
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
 /* Each card width: 4.5 cards visible */
 .trending-card {
@@ -345,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch(e){ posterUrl = ''; }
         }
 
-        // Fallback placeholder if still empty
         if(!posterUrl) posterUrl = 'https://via.placeholder.com/300x450?text=No+Image';
 
         const card = document.createElement('div');
@@ -363,26 +371,31 @@ document.addEventListener('DOMContentLoaded', () => {
         originalContainer.appendChild(card);
       }
 
-      // Arrow scrolling after movies loaded
+      // Arrow scrolling
       const container = originalContainer;
+      const cardWidth = container.querySelector('.trending-card').offsetWidth + 20; // 20 = gap
 
       function updateArrows() {
-        leftBtn.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
-        rightBtn.style.display = container.scrollLeft + container.clientWidth < container.scrollWidth ? 'flex' : 'none';
+        leftBtn.style.display = container.scrollLeft <= 0 ? 'none' : 'flex';
+        rightBtn.style.display =
+          container.scrollLeft + container.clientWidth >= container.scrollWidth - 5
+            ? 'none'
+            : 'flex';
       }
 
       updateArrows();
 
       leftBtn.addEventListener('click', () => {
-        container.scrollBy({ left: -container.querySelector('.trending-card').offsetWidth - 20, behavior: 'smooth' });
-        setTimeout(updateArrows, 300);
+        container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        setTimeout(updateArrows, 400);
       });
       rightBtn.addEventListener('click', () => {
-        container.scrollBy({ left: container.querySelector('.trending-card').offsetWidth + 20, behavior: 'smooth' });
-        setTimeout(updateArrows, 300);
+        container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        setTimeout(updateArrows, 400);
       });
 
       container.addEventListener('scroll', updateArrows);
+      window.addEventListener('resize', updateArrows);
 
     } catch(err) {
       originalContainer.innerHTML = 'Failed to load trending movies.';
@@ -392,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchTrendingMovies();
 });
+
 
 </script>
 
