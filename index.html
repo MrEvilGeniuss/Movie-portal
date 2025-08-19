@@ -38,7 +38,7 @@
     .trending-container { display: flex; overflow-x: auto; gap: 25px; padding-bottom: 10px; scroll-behavior: smooth; }
     .trending-container::-webkit-scrollbar { display: none; }
     .trending-card {
-  min-width: 220px; /* fits 4 in a row */
+  width: 220px;        /* fixed width for all cards */
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -60,7 +60,12 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: white;
+  word-wrap: break-word; /* wrap long titles */
+  line-height: 1.2rem;
+  max-height: 2.4rem;    /* max 2 lines */
+  overflow: hidden;
 }
+
 
     .trending-card:hover { transform: scale(1.05); }
 
@@ -232,35 +237,36 @@
         }
       });
       const traktData = await traktResponse.json();
-      container.innerHTML = '';
+      container.innerHTML = '' 
+      
+      for (let i = 0; i < Math.min(traktData.length, 4); i++) { // limit to 4 cards
+  const movie = traktData[i].movie;
+  let posterUrl = '';
 
-      for (let i = 0; i < Math.min(traktData.length, 10); i++) {
-        const movie = traktData[i].movie;
-        let posterUrl = '';
+  // Fetch poster from Fanart.tv
+  try {
+    const fanartResponse = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
+    const fanartData = await fanartResponse.json();
+    posterUrl = fanartData.movieposter ? fanartData.movieposter[0].url : '';
+  } catch(e) { posterUrl = ''; }
 
-        // Try Fanart.tv for poster
-        try {
-          const fanartResponse = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
-          const fanartData = await fanartResponse.json();
-          posterUrl = fanartData.movieposter ? fanartData.movieposter[0].url : '';
-        } catch(e) { posterUrl = ''; }
+  // Fallback to OMDb
+  if(!posterUrl) {
+    try {
+      const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
+      const omdbData = await omdbResponse.json();
+      posterUrl = omdbData.Poster !== 'N/A' ? omdbData.Poster : '';
+    } catch(e) { posterUrl = '' }
+  }
 
-        // Fallback to OMDb if needed
-        if(!posterUrl) {
-          try {
-            const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
-            const omdbData = await omdbResponse.json();
-            posterUrl = omdbData.Poster !== 'N/A' ? omdbData.Poster : '';
-          } catch(e) { posterUrl = '' }
-        }
-
-       const card = document.createElement('div');
-card.classList.add('trending-card');
-card.innerHTML = `
-  <img src='${posterUrl}' alt='${movie.title}'>
-  <div class="trending-card-title">${movie.title}</div>
-`;
-container.appendChild(card);
+  const card = document.createElement('div');
+  card.classList.add('trending-card');
+  card.innerHTML = `
+    <img src='${posterUrl}' alt='${movie.title}'>
+    <div class="trending-card-title">${movie.title}</div>
+  `;
+  container.appendChild(card);
+}
 
 
       }
