@@ -60,29 +60,22 @@
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* hide scrollbar for Firefox */
+  scrollbar-width: none;
 }
 
 .trending-container::-webkit-scrollbar {
-  display: none; /* hide scrollbar for Chrome/Safari */
+  display: none;
 }
 
-.trending-item {
-  flex: 0 0 calc(20% - 16px); /* 100% / 5 = 20% */
-  max-width: calc(20% - 16px);
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* Each card width: 4.5 cards visible */
 .trending-card {
-  flex: 0 0 calc((100% - 3 * 20px) / 4.5); /* 4.5 posters + gaps */
+  flex: 0 0 calc(20% - 16px); /* 5 posters at once */
+  max-width: calc(20% - 16px);
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
 }
+
 
 .trending-card img {
   width: 100%;
