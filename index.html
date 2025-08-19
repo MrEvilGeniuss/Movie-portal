@@ -53,8 +53,16 @@
   align-items: center;
 }
 
+.trending-section {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 0 10%;  /* this padding applies to both title and posters */
+}
+
 .trending-title {
-  padding-left: 10%;   /* title aligns with posters */
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  margin-left: 0; /* keeps it aligned with posters */
 }
 
 .trending-container {
@@ -63,7 +71,6 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding: 0 10%;      /* same left/right as title */
 }
 
 .trending-container::-webkit-scrollbar {
@@ -80,14 +87,13 @@
   position: relative;
 }
 
-
-
 .trending-card img {
   width: 100%;
   height: auto; /* keep full ratio */
   border-radius: 12px;
 }
-    /* Movie title centered */
+
+/* Movie title centered */
 .trending-card-title {
   margin-top: 8px;
   text-align: center;
@@ -131,8 +137,6 @@
   right: -30px; /* slightly away from posters */
 }
 
-
-
 /* Number on poster */
 .trending-number {
   position: absolute;
@@ -146,9 +150,10 @@
   text-shadow: 0 0 2px rgba(0,0,0,0.3); /* tiny glow */
 }
 
+.trending-card:hover { 
+  transform: scale(1.05); 
+}
 
-
-    .trending-card:hover { transform: scale(1.05); }
 
     /* More Reasons Section */
     .reasons-section { padding: 50px 10%; }
