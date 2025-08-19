@@ -37,8 +37,33 @@
     .trending-title { font-size: 1.8rem; margin-bottom: 20px; }
     .trending-container { display: flex; overflow-x: auto; gap: 25px; padding-bottom: 10px; scroll-behavior: smooth; }
     .trending-container::-webkit-scrollbar { display: none; }
-    .trending-card { min-width: 250px; height: 350px; border-radius: 15px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; flex-shrink: 0; }
-    .trending-card img { width: 100%; height: 100%; object-fit: cover; }
+    .trending-card {
+  min-width: 350px;
+  height: 500px;
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #111;
+  color: white;
+}
+
+.trending-card img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+}
+
+.trending-card-title {
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  flex: 1;
+}
     .trending-card:hover { transform: scale(1.05); }
 
     /* More Reasons Section */
@@ -232,9 +257,13 @@
         }
 
         const card = document.createElement('div');
-        card.classList.add('trending-card');
-        card.innerHTML = `<img src='${posterUrl}' alt='${movie.title}'>`;
-        container.appendChild(card);
+card.classList.add('trending-card');
+card.innerHTML = `
+  <img src='${posterUrl}' alt='${movie.title}'>
+  <div class="trending-card-title">${movie.title}</div>
+`;
+container.appendChild(card);
+
       }
     } catch (err) {
       container.innerHTML = 'Failed to load trending movies.';
