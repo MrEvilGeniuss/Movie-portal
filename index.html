@@ -32,47 +32,49 @@
     .hero_desc button { padding: 20px 40px; font-size: 1.2rem; background: rgba(229,9,20,0.2); backdrop-filter: blur(10px); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: transform 0.3s ease, background 0.3s ease; }
     .hero_desc button:hover { background: rgba(229,9,20,0.4); transform: scale(1.05); }
 
-/* Trending Carousel */
+/* Trending Carousel wrapper to allow arrows */
 .trending-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
+/* Arrow buttons */
 .trending-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 5;
+  z-index: 10;
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);
   border: none;
   color: white;
-  font-size: 2rem;
+  font-size: 2.5rem;
   padding: 0 15px;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.3s ease;
-  opacity: 0;
+  opacity: 1; /* always visible for now */
 }
-.trending-wrapper:hover .trending-arrow { opacity: 1; } /* appear on hover */
 .trending-arrow:hover { background: rgba(255,255,255,0.3); color: #e50914; transform: scale(1.1); }
-.trending-arrow.left { left: -15px; }
-.trending-arrow.right { right: -15px; }
+.trending-arrow.left { left: 0; }
+.trending-arrow.right { right: 0; }
 
+/* Container */
 .trending-container {
   display: flex;
   overflow-x: auto;
   gap: 15px;
   scroll-behavior: smooth;
-  padding-bottom: 10px;
+  padding: 10px 0;
   margin: 0 50px; /* space for arrows */
 }
 .trending-container::-webkit-scrollbar { display: none; }
 
+/* Poster card */
 .trending-card {
-  flex: 0 0 calc((100% - 3.5 * 15px)/4.5); /* 4.5 posters visible */
-  cursor: pointer;
+  flex: 0 0 calc((100% - 3*15px)/4); /* width for 4 posters */
+  max-width: 200px; /* control size */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,29 +89,27 @@
   object-fit: cover;
 }
 
+/* Poster title below poster */
 .trending-card-title {
   margin-top: 5px;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 500;
-  line-height: 1.2rem;
-  word-wrap: break-word;
   color: white;
 }
 
-/* Number styling */
+/* Number on poster */
 .trending-number {
   position: absolute;
-  bottom: -18px; /* protruding below poster */
-  left: -12px;
-  font-size: 3rem; /* bigger */
+  top: 10px;
+  left: 10px;
+  font-size: 4rem;
   font-weight: 800;
-  color: rgba(255,255,255,0.4); /* slightly translucent */
-  text-shadow: 0 0 2px rgba(0,0,0,0.3); /* tiny glow */
+  color: rgba(255,255,255,0.3); /* slightly transparent */
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
+  text-shadow: 0 0 2px rgba(0,0,0,0.3); /* tiny glow */
 }
-
 
 
 
@@ -264,15 +264,30 @@
       });
     </script>
   </main>
- <script>
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   const traktApiKey = '70639e492be07913ad0f3b1108a129ff6b86a5ae733246f40886c8f98c41889f';
   const fanartApiKey = 'c5e2d487b405bf6082706ba17b5c8f38';
   const omdbApiKey = 'ffa1ef04';
-  const container = document.getElementById('trending-container');
+  const originalContainer = document.getElementById('trending-container');
+
+  // Create wrapper and arrows
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('trending-wrapper');
+  const leftBtn = document.createElement('button');
+  leftBtn.classList.add('trending-arrow', 'left');
+  leftBtn.innerHTML = '&#8249;'; // left chevron
+  const rightBtn = document.createElement('button');
+  rightBtn.classList.add('trending-arrow', 'right');
+  rightBtn.innerHTML = '&#8250;'; // right chevron
+
+  originalContainer.parentNode.insertBefore(wrapper, originalContainer);
+  wrapper.appendChild(leftBtn);
+  wrapper.appendChild(originalContainer);
+  wrapper.appendChild(rightBtn);
 
   async function fetchTrendingMovies() {
-    container.innerHTML = 'Loading...';
+    originalContainer.innerHTML = 'Loading...';
 
     try {
       const traktResponse = await fetch('https://api.trakt.tv/movies/trending', {
@@ -283,18 +298,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       const traktData = await traktResponse.json();
-      container.innerHTML = '';
+      originalContainer.innerHTML = '';
 
       for (let i = 0; i < Math.min(traktData.length, 10); i++) {
         const movie = traktData[i].movie;
         let posterUrl = '';
 
+        // Fanart.tv
         try {
           const fanartResponse = await fetch(`https://webservice.fanart.tv/v3/movies/${movie.ids.tmdb}?api_key=${fanartApiKey}`);
           const fanartData = await fanartResponse.json();
           posterUrl = fanartData.movieposter ? fanartData.movieposter[0].url : '';
         } catch(e) { posterUrl = ''; }
 
+        // OMDb fallback
         if(!posterUrl) {
           try {
             const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${movie.ids.imdb}&apikey=${omdbApiKey}`);
@@ -315,11 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
         number.textContent = i + 1;
         card.appendChild(number);
 
-        container.appendChild(card);
+        originalContainer.appendChild(card);
       }
-
     } catch(err) {
-      container.innerHTML = 'Failed to load trending movies.';
+      originalContainer.innerHTML = 'Failed to load trending movies.';
       console.error(err);
     }
   }
@@ -327,19 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchTrendingMovies();
 
   // Arrow scrolling
-  const leftBtn = document.querySelector('.trending-arrow.left');
-  const rightBtn = document.querySelector('.trending-arrow.right');
   leftBtn.addEventListener('click', () => {
-    container.scrollBy({ left: -container.clientWidth / 2, behavior: 'smooth' });
+    originalContainer.scrollBy({ left: -originalContainer.clientWidth / 2, behavior: 'smooth' });
   });
   rightBtn.addEventListener('click', () => {
-    container.scrollBy({ left: container.clientWidth / 2, behavior: 'smooth' });
+    originalContainer.scrollBy({ left: originalContainer.clientWidth / 2, behavior: 'smooth' });
   });
 });
-
-  
-
 </script>
+
 
 </body>
 
